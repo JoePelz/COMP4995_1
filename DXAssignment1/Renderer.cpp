@@ -1,8 +1,5 @@
 #include "Renderer.h"
 
-#define MAP(x, y) (y * Pitch / 4 + x)
-#define MAP2(x, y) (y * LockedRect.Pitch / 4 + x)
-
 
 int Renderer::startEngine(HWND hwnd, Model& model) {
 	HRESULT r = 0;//return values
@@ -31,34 +28,6 @@ int Renderer::stopEngine() {
 		pD3D->Release();
 
 	return S_OK;
-}
-
-void Renderer::Draw(int Pitch, DWORD* pData) {
-	pData[MAP(100, 200)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(101, 200)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(100, 201)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(101, 201)] = D3DCOLOR_XRGB(255, 0, 0);
-
-	pData[MAP(105, 195)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(106, 195)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(105, 196)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(106, 196)] = D3DCOLOR_XRGB(255, 0, 0);
-
-	pData[MAP(105, 200)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(106, 200)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(105, 201)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(106, 201)] = D3DCOLOR_XRGB(255, 0, 0);
-
-	pData[MAP(105, 205)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(106, 205)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(105, 206)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(106, 206)] = D3DCOLOR_XRGB(255, 0, 0);
-
-	pData[MAP(110, 200)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(111, 200)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(110, 201)] = D3DCOLOR_XRGB(255, 0, 0);
-	pData[MAP(111, 201)] = D3DCOLOR_XRGB(255, 0, 0);
-	//SimpleBitmapDraw();
 }
 
 int Renderer::InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOOL bWindowed, D3DFORMAT FullScreenFormat, LPDIRECT3D9 pD3D, LPDIRECT3DDEVICE9* ppDevice) {
@@ -131,7 +100,7 @@ void Renderer::PreScene2D(Model& model) {
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
 
 	//clear the display area with colour almost-black, ignore stencil buffer
-	pDevice->Clear(0, 0, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 25), 1.0f, 0);
+	pDevice->Clear(0, 0, D3DCLEAR_TARGET, CLEAR_COLOR, 1.0f, 0);
 
 	//get pointer to backbuffer
 	hr = pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
@@ -139,7 +108,7 @@ void Renderer::PreScene2D(Model& model) {
 		Errors::SetError(TEXT("Couldn't get backbuffer"));
 	}
 
-	//draw image
+	//draw BG elements
 	for (auto d : model.getBG()) {
 		d->draw(pBackSurf);
 	}
@@ -154,22 +123,23 @@ void Renderer::Scene3D(Model& model) {
 
 void Renderer::PostScene2D(Model& model) {
 	HRESULT hr;
-	D3DLOCKED_RECT LockedRect;//locked area of display memory(buffer really) we are drawing to
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
-	DWORD* pData;
 
 	//get the back buffer
 	hr = pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if (FAILED(hr)) {
-		Errors::SetError(TEXT("Couldn't get backbuffer"));
+		Errors::SetError(TEXT("PostScene2D: Couldn't get backbuffer"));
 	}
+
+	/*
+	D3DLOCKED_RECT LockedRect;//locked area of display memory(buffer really) we are drawing to
+	DWORD* pData;
 
 	//lock the back buffer, so we can edit the pixels
 	hr = pBackSurf->LockRect(&LockedRect, NULL, 0);
 	if (FAILED(hr)) {
-		Errors::SetError(TEXT("Could not lock the back buffer"));
+		Errors::SetError(TEXT("PostScene2D: Could not lock the back buffer"));
 	}
-
 	pData = (DWORD*)(LockedRect.pBits);
 	//DRAW CODE GOES HERE - use pData
 	Draw(LockedRect.Pitch, pData);
@@ -180,10 +150,17 @@ void Renderer::PostScene2D(Model& model) {
 		pData[MAP2(100 + dy/3, (100 + dy))] = D3DCOLOR_XRGB(255, 0, 0);
 	}
 
-
-
 	pBackSurf->UnlockRect();
 	pData = 0;
+
+	*/
+
+
+	//draw foreground elements
+	for (auto d : model.getFG()) {
+		d->draw(pBackSurf);
+	}
+
 
 	pBackSurf->Release();//release lock
 	pBackSurf = 0;

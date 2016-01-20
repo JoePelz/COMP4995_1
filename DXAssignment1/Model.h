@@ -3,6 +3,7 @@
 #include <d3d9.h>
 #include "Defines.h"
 #include "Drawable2D.h"
+#include "Lines.h"
 #include <vector>
 #include <memory>
 
@@ -12,6 +13,7 @@
 class Model {
 	std::vector<std::shared_ptr<Drawable2D>> bgLayers_;
 	std::vector<std::shared_ptr<Drawable2D>> fgLayers_;
+	std::shared_ptr<Lines> lines_;
 
 	/* The current frame rate, in frames per second. */
 	int frameRate_;
@@ -22,7 +24,7 @@ class Model {
 	/* The device context height. */
 	int height_;
 public:
-	Model() : bgLayers_(), fgLayers_(), frameRate_(0), frameTime_(0), width_(DEFAULT_WIDTH), height_(DEFAULT_HEIGHT) {};
+	Model();
 	~Model();
 
 	int getFrameRate() const;

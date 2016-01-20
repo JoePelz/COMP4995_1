@@ -157,7 +157,9 @@
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="Lines.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -167,7 +169,10 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Drawable2D.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="Errors.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="Lines.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Model.h" />
   </ItemGroup>

@@ -11,8 +11,6 @@ class Renderer {
 	LPDIRECT3D9 pD3D; //COM object
 	LPDIRECT3DDEVICE9 pDevice; //graphics device
 
-	void Draw(int Pitch, DWORD* pData);
-
 	// Set up the Direct3D display, with a specific width, height, fullscreen mode, and more.
 	int InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOOL bWindowed, D3DFORMAT FullScreenFormat, LPDIRECT3D9 pD3D, LPDIRECT3DDEVICE9* ppDevice);
 

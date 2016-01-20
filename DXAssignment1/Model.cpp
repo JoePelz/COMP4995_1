@@ -1,5 +1,9 @@
 #include "Model.h"
 
+Model::Model() : bgLayers_(), fgLayers_(), lines_(new Lines()), frameRate_(0), frameTime_(0), width_(DEFAULT_WIDTH), height_(DEFAULT_HEIGHT) {
+	addFG(lines_);
+}
+
 Model::~Model() {
 }
 
