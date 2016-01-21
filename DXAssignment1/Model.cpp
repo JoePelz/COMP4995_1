@@ -10,14 +10,28 @@ Model::~Model() {
 int Model::getFrameRate() const {
 	return frameRate_;
 }
-void Model::setFrameRate(int r) {
-	frameRate_ = r;
-}
 
-double Model::getFrameTime() const {
+INT64 Model::getFrameTime() const {
 	return frameTime_;
 }
-void Model::setFrameTime(double t) {
+void Model::setFrameTick() {
+	static INT64 lastTime;
+	INT64 newTime;
+	QueryPerformanceCounter((LARGE_INTEGER*)&newTime);
+	frameTime_ = lastTime - newTime;
+	frameRate_ = (frameTime_ * 29 + ticksFrequency_ / frameTime_) / 30; //running average of last 30 values.
+	lastTime = newTime;
+}
+
+int Model::initFrameTimer() {
+	QueryPerformanceFrequency((LARGE_INTEGER*)&ticksFrequency_);
+
+	if (ticksFrequency_ == 0) {
+		Errors::SetError(TEXT("The system does not support high resolution timing"));
+		return E_FAIL;
+	}
+
+	return S_OK;
 }
 
 int Model::getWidth() const {
@@ -26,6 +40,10 @@ int Model::getWidth() const {
 
 int Model::getHeight() const {
 	return height_;
+}
+
+std::shared_ptr<Lines> Model::getLines() {
+	return lines_;
 }
 
 void Model::addBG(std::shared_ptr<Drawable2D> drawable) {

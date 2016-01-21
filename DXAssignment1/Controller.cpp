@@ -3,7 +3,9 @@
 //Static
 long CALLBACK Controller::windowLoop(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam) {
 	LPCREATESTRUCT cs;
-	//Controller* ctrl;
+	static Controller* ctrl;
+	static int bMouseDown = 0;
+
 	switch (uMessage) {
 	case WM_CREATE:
 	{
@@ -13,7 +15,7 @@ long CALLBACK Controller::windowLoop(HWND hWnd, UINT uMessage, WPARAM wParam, LP
 			SetClassLongPtr(hWnd, 0, (LONG)cs->lpCreateParams);
 		}
 
-		//ctrl = (Controller*)GetClassLongPtr(hWnd, 0);
+		ctrl = (Controller*)GetClassLongPtr(hWnd, 0);
 		//ctrl->setHWnd(hWnd);
 		
 		return 0;
@@ -21,6 +23,27 @@ long CALLBACK Controller::windowLoop(HWND hWnd, UINT uMessage, WPARAM wParam, LP
 	case WM_PAINT:
 	{
 		ValidateRect(hWnd, NULL);//basically saying - yeah we took care of any paint msg without any overhead
+		return 0;
+	}
+	case WM_LBUTTONDOWN:
+	{
+		bMouseDown = 1;
+		ctrl->MouseDown(lParam);
+		return 0;
+	}
+	case WM_MOUSEMOVE:
+	{
+		if (bMouseDown) {
+			ctrl->MouseMove(lParam);
+		}
+		return 0;
+	}
+	case WM_LBUTTONUP:
+	{
+		if (bMouseDown) {
+			bMouseDown = 0;
+			ctrl->MouseUp(lParam);
+		}
 		return 0;
 	}
 	case WM_DESTROY:
@@ -35,6 +58,32 @@ long CALLBACK Controller::windowLoop(HWND hWnd, UINT uMessage, WPARAM wParam, LP
 	}
 }
 
+void Controller::MouseDown(LPARAM lParam) {
+	auto lines = gameModel.getLines();
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+	lines->startLine(xPos, yPos);
+	Errors::SetError(TEXT("Mouse down at (%d, %d)"), xPos, yPos);
+}
+
+void Controller::MouseMove(LPARAM lParam) {
+	auto lines = gameModel.getLines();
+
+	POINT p;
+	p.x = GET_X_LPARAM(lParam);
+	p.y = GET_Y_LPARAM(lParam);
+
+	lines->dragLine(p.x, p.y);
+}
+
+void Controller::MouseUp(LPARAM lParam) {
+	auto lines = gameModel.getLines();
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+	lines->dragLine(xPos, yPos);
+	lines->endLine();
+}
+
 int Controller::GameStartup() {
 	if (FAILED(renderEngine.startEngine(hWnd, gameModel))) {
 		Errors::SetError(TEXT("Initialization Failed"));
@@ -42,16 +91,21 @@ int Controller::GameStartup() {
 		return E_FAIL;
 	}
 
+	//Initialize background image
 	Background* bg = new Background(renderEngine.getDevice());
 	bg->setImage(TEXT(DEFAULT_BITMAP));
 	std::shared_ptr<Drawable2D> drawable(bg);
 	gameModel.addBG(drawable);
+
+	//Initialize frame counter
+	gameModel.initFrameTimer();
 
 	return S_OK;
 }
 
 int Controller::GameLoop() {
 	renderEngine.render(gameModel);
+	gameModel.setFrameTick();
 
 	if (GetAsyncKeyState(VK_ESCAPE))
 		PostQuitMessage(0);
@@ -67,7 +121,6 @@ int Controller::GameShutdown() {
 Controller::Controller(HINSTANCE hInstance)
 	: hInstance(hInstance) {
 }
-
 
 Controller::~Controller() {
 }

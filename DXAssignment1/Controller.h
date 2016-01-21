@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <windowsx.h>
 #include "Renderer.h"
 #include "Background.h"
 #include <d3d9.h>
@@ -31,6 +32,11 @@ public:
 
 	//win32 window loop, to handle mouse, keyboard, and other windows messages.
 	static long CALLBACK windowLoop(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
+
+	void MouseDown(LPARAM pos);
+	void MouseMove(LPARAM pos);
+	void MouseUp(LPARAM pos);
+
 
 	//Starts the renderer (initializes DirectX. See Renderer::startEngine(HWND, Model))
 	// and sets the background.
