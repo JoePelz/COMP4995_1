@@ -131,31 +131,6 @@ void Renderer::PostScene2D(Model& model) {
 		Errors::SetError(TEXT("PostScene2D: Couldn't get backbuffer"));
 	}
 
-	/*
-	D3DLOCKED_RECT LockedRect;//locked area of display memory(buffer really) we are drawing to
-	DWORD* pData;
-
-	//lock the back buffer, so we can edit the pixels
-	hr = pBackSurf->LockRect(&LockedRect, NULL, 0);
-	if (FAILED(hr)) {
-		Errors::SetError(TEXT("PostScene2D: Could not lock the back buffer"));
-	}
-	pData = (DWORD*)(LockedRect.pBits);
-	//DRAW CODE GOES HERE - use pData
-	Draw(LockedRect.Pitch, pData);
-
-	//line from (100, 100)
-	//       to (200, 400)
-	for (int dy = 0; dy < 300; dy++) {
-		pData[MAP2(100 + dy/3, (100 + dy))] = D3DCOLOR_XRGB(255, 0, 0);
-	}
-
-	pBackSurf->UnlockRect();
-	pData = 0;
-
-	*/
-
-
 	//draw foreground elements
 	for (auto d : model.getFG()) {
 		d->draw(pBackSurf);

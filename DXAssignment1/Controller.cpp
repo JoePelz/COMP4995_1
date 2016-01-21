@@ -99,6 +99,11 @@ int Controller::GameStartup() {
 
 	//Initialize frame counter
 	gameModel.initFrameTimer();
+	TextWriter* tw = new TextWriter(renderEngine.getDevice(), TEXT("font.bmp"), 10, 12);
+	tw->setText("Hello, world!");
+	std::shared_ptr<Drawable2D> drawableText(tw);
+	gameModel.addFG(drawableText);
+
 
 	return S_OK;
 }
