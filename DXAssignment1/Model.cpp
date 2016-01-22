@@ -7,7 +7,7 @@ Model::Model() : bgLayers_(), fgLayers_(), lines_(new Lines()), frameRate_(0), f
 Model::~Model() {
 }
 
-int Model::getFrameRate() const {
+UINT Model::getFrameRate() const {
 	return frameRate_;
 }
 
@@ -15,11 +15,11 @@ INT64 Model::getFrameTime() const {
 	return frameTime_;
 }
 void Model::setFrameTick() {
-	static INT64 lastTime;
+	static INT64 lastTime = 0;
 	INT64 newTime;
 	QueryPerformanceCounter((LARGE_INTEGER*)&newTime);
-	frameTime_ = lastTime - newTime;
-	frameRate_ = (frameTime_ * 29 + ticksFrequency_ / frameTime_) / 30; //running average of last 30 values.
+	frameTime_ = newTime - lastTime;
+	frameRate_ = (frameRate_ * 29 + ticksFrequency_ / frameTime_) / 30; //running average of last 30 values.
 	lastTime = newTime;
 }
 

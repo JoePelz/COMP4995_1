@@ -4,7 +4,7 @@
 #include <windowsx.h>
 #include "Renderer.h"
 #include "Background.h"
-#include "TextWriter.h"
+#include "FrameRate.h"
 #include <d3d9.h>
 #include <memory>
 

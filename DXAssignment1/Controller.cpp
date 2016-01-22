@@ -63,7 +63,7 @@ void Controller::MouseDown(LPARAM lParam) {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
 	lines->startLine(xPos, yPos);
-	Errors::SetError(TEXT("Mouse down at (%d, %d)"), xPos, yPos);
+	//Errors::SetError(TEXT("Mouse down at (%d, %d)"), xPos, yPos);
 }
 
 void Controller::MouseMove(LPARAM lParam) {
@@ -99,8 +99,9 @@ int Controller::GameStartup() {
 
 	//Initialize frame counter
 	gameModel.initFrameTimer();
-	TextWriter* tw = new TextWriter(renderEngine.getDevice(), TEXT("font.bmp"), 10, 12);
-	tw->setText("Hello, world!");
+	FrameRate* tw = new FrameRate(renderEngine.getDevice(), TEXT("font.bmp"), 10, 12, &gameModel);
+	tw->setPosition(200, 300);
+	tw->setTransparentColor(D3DCOLOR_ARGB(255, 255, 0, 255));
 	std::shared_ptr<Drawable2D> drawableText(tw);
 	gameModel.addFG(drawableText);
 

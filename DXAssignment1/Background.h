@@ -12,7 +12,7 @@ class Background :
 public:
 	Background(LPDIRECT3DDEVICE9& D3DDevice);
 	~Background();
-	virtual int draw(LPDIRECT3DSURFACE9 pBackSurf) const override;
+	virtual int draw(LPDIRECT3DSURFACE9 pBackSurf) override;
 	int setImage(const TCHAR* path);
 };
 

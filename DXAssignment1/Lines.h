@@ -13,7 +13,7 @@ class Lines :
 	std::vector<std::shared_ptr<Line>> lines;
 	Line* tempLine;
 public:
-	int draw(LPDIRECT3DSURFACE9 pBackSurf) const override;
+	int draw(LPDIRECT3DSURFACE9 pBackSurf) override;
 	void startLine(int x, int y);
 	void dragLine(int x, int y);
 	void endLine();

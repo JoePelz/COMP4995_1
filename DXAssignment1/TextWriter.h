@@ -22,7 +22,7 @@ class TextWriter : public Drawable2D {
 	int posy_;
 
 	int LoadImageToSurface(LPDIRECT3DDEVICE9& device, const TCHAR* const pathname);
-	void PrintChar(int x, int y, char Character, DWORD* pDestData, int DestPitch) const;
+	void PrintChar(int x, int y, const char Character, DWORD* pDestData, int DestPitch) const;
 public:
 	TextWriter(LPDIRECT3DDEVICE9& device, const TCHAR* path, int fontWidth, int fontHeight);
 	~TextWriter();
@@ -30,6 +30,6 @@ public:
 	void setText(const std::string& text);
 	void setText(const std::string&& text);
 	void setPosition(int x, int y);
-	virtual int draw(LPDIRECT3DSURFACE9 pBackSurf) const;
+	virtual int draw(LPDIRECT3DSURFACE9 pBackSurf) override;
 };
 

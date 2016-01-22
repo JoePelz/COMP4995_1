@@ -9,7 +9,7 @@ Background::~Background() {
 	background_->Release();
 }
 
-int Background::draw(LPDIRECT3DSURFACE9 pBackSurf) const {
+int Background::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 	HRESULT hr = device_->UpdateSurface(background_, NULL, pBackSurf, NULL);
 	if (FAILED(hr)) {
 		Errors::SetError(TEXT("Could not copy surface"));

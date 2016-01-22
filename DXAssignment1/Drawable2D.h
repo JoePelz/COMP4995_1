@@ -4,7 +4,7 @@
 
 class Drawable2D {
 public:
-	virtual int draw(LPDIRECT3DSURFACE9 pBackSurf) const { OutputDebugString(TEXT("What happened?\n")); return S_OK; }
+	virtual int draw(LPDIRECT3DSURFACE9 pBackSurf) { OutputDebugString(TEXT("What happened?\n")); return S_OK; }
 
 	Drawable2D() {
 	}

@@ -9,7 +9,7 @@ Lines::Lines() {
 Lines::~Lines() {
 }
 
-int Lines::draw(LPDIRECT3DSURFACE9 pBackSurf) const {
+int Lines::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 	HRESULT hr;
 	D3DLOCKED_RECT LockedRect;//locked area of display memory(buffer really) we are drawing to
 	DWORD* pData;

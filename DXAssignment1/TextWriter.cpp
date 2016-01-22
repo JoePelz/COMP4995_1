@@ -71,7 +71,7 @@ void TextWriter::setPosition(int x, int y) {
 	posy_ = y;
 }
 
-void TextWriter::PrintChar(int x, int y, char Character, DWORD* pDestData, int DestPitch) const {
+void TextWriter::PrintChar(int x, int y, const char Character, DWORD* pDestData, int DestPitch) const {
 	HRESULT r = 0;
 
 	div_t Result;	// Holds the result of divisions
@@ -149,9 +149,12 @@ void TextWriter::PrintChar(int x, int y, char Character, DWORD* pDestData, int D
 				// Increment the offsets to the next pixel
 				AlphaOffset++;
 				DestOffset++;
-			}
-			else
+			} else {
 				pDestData[DestOffset] = pAlphaData[AlphaOffset];
+				// Increment the offsets to the next pixel
+				AlphaOffset++;
+				DestOffset++;
+			}
 		}
 
 		// Move the offsets to the start of the next row
@@ -163,7 +166,7 @@ void TextWriter::PrintChar(int x, int y, char Character, DWORD* pDestData, int D
 	alphabet_->UnlockRect();
 }
 
-int TextWriter::draw(LPDIRECT3DSURFACE9 pBackSurf) const {
+int TextWriter::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 	HRESULT hr;
 	D3DLOCKED_RECT LockedRect;//locked area of display memory(buffer really) we are drawing to
 	DWORD* pData;

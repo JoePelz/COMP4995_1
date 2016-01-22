@@ -16,7 +16,7 @@ class Model {
 	std::shared_ptr<Lines> lines_;
 
 	/* The current frame rate, in frames per second. */
-	int frameRate_;
+	UINT frameRate_;
 	/* The render time in ticks per frame. (1 / fps) */
 	INT64 frameTime_;
 	/* The number of timing ticks per second. */
@@ -30,7 +30,7 @@ public:
 	Model();
 	~Model();
 
-	int getFrameRate() const;
+	UINT getFrameRate() const;
 	INT64 getFrameTime() const;
 	void setFrameTick();
 	int initFrameTimer();
