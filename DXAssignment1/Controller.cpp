@@ -100,8 +100,8 @@ int Controller::GameStartup() {
 	//Initialize frame counter
 	gameModel.initFrameTimer();
 	FrameRate* tw = new FrameRate(renderEngine.getDevice(), TEXT("font.bmp"), 10, 12, &gameModel);
-	tw->setPosition(200, 300);
-	tw->setTransparentColor(D3DCOLOR_ARGB(255, 255, 0, 255));
+	tw->setPosition(10, 10);
+	tw->setTransparentColor(D3DCOLOR_ARGB(0, 255, 0, 255));
 	std::shared_ptr<Drawable2D> drawableText(tw);
 	gameModel.addFG(drawableText);
 

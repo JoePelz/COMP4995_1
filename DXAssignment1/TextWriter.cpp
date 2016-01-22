@@ -170,6 +170,8 @@ int TextWriter::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 	HRESULT hr;
 	D3DLOCKED_RECT LockedRect;//locked area of display memory(buffer really) we are drawing to
 	DWORD* pData;
+	int y = posy_;
+	int x = posx_;
 
 	//lock the back buffer, so we can edit the pixels
 	hr = pBackSurf->LockRect(&LockedRect, NULL, 0);
@@ -181,7 +183,13 @@ int TextWriter::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 	// Loop for each character in the string
 	for (std::string::size_type i = 0; i < text_.length(); i++) {
 		// Print the current character
-		PrintChar(posx_ + (charWidth_ * i), posy_, text_[i], pData, LockedRect.Pitch);
+		if (text_[i] == '\n') {
+			y += charHeight_;
+			x = posx_;
+			continue;
+		}
+		PrintChar(x, y, text_[i], pData, LockedRect.Pitch);
+		x += charWidth_;
 	}
 
 	pBackSurf->UnlockRect();

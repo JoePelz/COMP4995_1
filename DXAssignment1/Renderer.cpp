@@ -87,7 +87,8 @@ int Renderer::render(Model & model) {
 
 	PreScene2D(model);
 
-	Scene3D(model);
+	//For future use...
+	//Scene3D(model);
 
 	PostScene2D(model);
 
@@ -100,7 +101,7 @@ void Renderer::PreScene2D(Model& model) {
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
 
 	//clear the display area with colour almost-black, ignore stencil buffer
-	pDevice->Clear(0, 0, D3DCLEAR_TARGET, CLEAR_COLOR, 1.0f, 0);
+	//pDevice->Clear(0, 0, D3DCLEAR_TARGET, CLEAR_COLOR, 1.0f, 0);
 
 	//get pointer to backbuffer
 	hr = pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
