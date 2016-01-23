@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model() : bgLayers_(), fgLayers_(), lines_(new Lines()), frameRate_(0), frameTime_(0), width_(DEFAULT_WIDTH), height_(DEFAULT_HEIGHT) {
+Model::Model() : bgLayers_(), fgLayers_(), lines_(new Lines()), frameRate_(1000), frameTime_(0), width_(DEFAULT_WIDTH), height_(DEFAULT_HEIGHT) {
 	addFG(lines_);
 }
 
@@ -20,6 +20,7 @@ void Model::setFrameTick() {
 	QueryPerformanceCounter((LARGE_INTEGER*)&newTime);
 	frameTime_ = newTime - lastTime;
 	frameRate_ = (frameRate_ * (FRAME_RATE_SMOOTHING - 1) + ticksFrequency_ / frameTime_) / FRAME_RATE_SMOOTHING; //running average of last 30 values.
+	//frameRate_ = ticksFrequency_ / frameTime_;
 	lastTime = newTime;
 }
 

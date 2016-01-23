@@ -29,6 +29,8 @@ int Lines::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 		adx = std::abs(line->dx);
 		ady = std::abs(line->dy);
 
+		/* TODO: clean this up by changing it to  x + t(vx) + y + t(vy) over the range t == 0..Max(adx, ady)
+		*/
 		if (ady >= adx) {
 			for (int dy = 0; dy < ady; dy++) {
 				pData[MAP((line->x + line->dx * dy / ady), (line->y + line->dy * dy / ady))] = D3DCOLOR_XRGB(192, 255, 0);
