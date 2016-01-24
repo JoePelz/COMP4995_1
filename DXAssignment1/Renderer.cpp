@@ -1,32 +1,42 @@
 #include "Renderer.h"
 
-
 int Renderer::startEngine(HWND hwnd, Model& model) {
 	HRESULT r = 0;//return values
 
-	pD3D = Direct3DCreate9(D3D_SDK_VERSION);//COM object
-	if (pD3D == NULL) {
+	pD3D_ = Direct3DCreate9(D3D_SDK_VERSION);//COM object
+	if (pD3D_ == NULL) {
 		Errors::SetError(TEXT("Could not create IDirect3D9 object"));
 		return E_FAIL;
 	}
 
 	//4th argument is TRUE or FALSE, where FALSE means fullscreen.
-	r = InitDirect3DDevice(hwnd, model.getWidth(), model.getHeight(), WINDOWED_MODE, D3DFMT_X8R8G8B8, pD3D, &pDevice);
+	r = InitDirect3DDevice(hwnd, model.getWidth(), model.getHeight(), WINDOWED_MODE, D3DFMT_X8R8G8B8, pD3D_, &pDevice_);
 	if (FAILED(r)) {//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		Errors::SetError(TEXT("Initialization of the device failed"));
 		return E_FAIL;
+	}
+
+	r = pDevice_->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer_);
+	if (FAILED(r)) {
+		Errors::SetError(TEXT("Couldn't get backbuffer"));
 	}
 
 	return S_OK;
 }
 
 int Renderer::stopEngine() {
-	if (pDevice)
-		pDevice->Release();
-
-	if (pD3D)
-		pD3D->Release();
-
+	if (pBackBuffer_) {
+		pBackBuffer_->Release();//release lock
+		pBackBuffer_ = 0;
+	}
+	if (pDevice_) {
+		pDevice_->Release();
+		pDevice_ = 0;
+	}
+	if (pD3D_) {
+		pD3D_->Release();
+		pD3D_ = 0;
+	}
 	return S_OK;
 }
 
@@ -68,19 +78,20 @@ int Renderer::InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOOL bW
 	return S_OK;
 }
 
-Renderer::Renderer() {
+Renderer::Renderer() : pD3D_(0), pDevice_(0), pBackBuffer_(0) {
 }
 
 Renderer::~Renderer() {
+	stopEngine();
 }
 
 //Accessor for the render device
 LPDIRECT3DDEVICE9& Renderer::getDevice() {
-	return pDevice;
+	return pDevice_;
 }
 
 int Renderer::render(Model & model) {
-	if (!pDevice) {
+	if (!pDevice_) {
 		Errors::SetError(TEXT("Cannot render because there is no device"));
 		return E_FAIL;
 	}
@@ -92,30 +103,18 @@ int Renderer::render(Model & model) {
 
 	PostScene2D(model);
 
-	pDevice->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
+	pDevice_->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
 	return S_OK;
 }
 
 void Renderer::PreScene2D(Model& model) {
-	HRESULT hr;
-	LPDIRECT3DSURFACE9 pBackSurf = 0;
-
 	//clear the display area with colour almost-black, ignore stencil buffer
 	//pDevice->Clear(0, 0, D3DCLEAR_TARGET, CLEAR_COLOR, 1.0f, 0);
 
-	//get pointer to backbuffer
-	hr = pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
-	if (FAILED(hr)) {
-		Errors::SetError(TEXT("Couldn't get backbuffer"));
-	}
-
 	//draw BG elements
 	for (auto d : model.getBG()) {
-		d->draw(pBackSurf);
+		d->draw(pBackBuffer_);
 	}
-
-	pBackSurf->Release();//release lock
-	pBackSurf = 0;
 }
 
 void Renderer::Scene3D(Model& model) {
@@ -123,21 +122,8 @@ void Renderer::Scene3D(Model& model) {
 }
 
 void Renderer::PostScene2D(Model& model) {
-	HRESULT hr;
-	LPDIRECT3DSURFACE9 pBackSurf = 0;
-
-	//get the back buffer
-	hr = pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
-	if (FAILED(hr)) {
-		Errors::SetError(TEXT("PostScene2D: Couldn't get backbuffer"));
-	}
-
 	//draw foreground elements
 	for (auto d : model.getFG()) {
-		d->draw(pBackSurf);
+		d->draw(pBackBuffer_);
 	}
-
-
-	pBackSurf->Release();//release lock
-	pBackSurf = 0;
 }

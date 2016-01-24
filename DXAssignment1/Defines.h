@@ -10,4 +10,4 @@
 #define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
 
-#define WINDOWED_MODE 1
+#define WINDOWED_MODE 0

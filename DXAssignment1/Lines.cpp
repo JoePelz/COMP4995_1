@@ -14,7 +14,7 @@ int Lines::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 	D3DLOCKED_RECT LockedRect;//locked area of display memory(buffer really) we are drawing to
 	DWORD* pData;
 
-	int adx, ady;
+	int dx, dy, sx, sy, err, e2, i, iend;
 
 	//lock the back buffer, so we can edit the pixels
 	hr = pBackSurf->LockRect(&LockedRect, NULL, 0);
@@ -26,33 +26,51 @@ int Lines::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 	//line from (100, 100)
 	//       to (200, 400)
 	for (auto& line : lines) {
-		adx = std::abs(line->dx);
-		ady = std::abs(line->dy);
+		i = line->x + line->y * LockedRect.Pitch / 4; //starting point
+		iend = i + line->dx + line->dy * LockedRect.Pitch / 4; //ending point
+		dx = abs(line->dx);     // pixels travelled in x
+		dy = abs(line->dy);     // pixels traveled in y
+		sx = line->dx > 0 ? 1 : -1; // +1 if going right, -1 if going left or vertical
+		sy = line->dy > 0 ? 1 : -1; // +1 if going up, -1 if going down or horizontal
+		err = (dx>dy ? dx : -dy) / 2;// TODO: figure out what's going on.
 
-		/* TODO: clean this up by changing it to  x + t(vx) + y + t(vy) over the range t == 0..Max(adx, ady)
-		*/
-		if (ady >= adx) {
-			for (int dy = 0; dy < ady; dy++) {
-				pData[MAP((line->x + line->dx * dy / ady), (line->y + line->dy * dy / ady))] = D3DCOLOR_XRGB(192, 255, 0);
+		for (;;) {
+			pData[i] = D3DCOLOR_XRGB(192, 255, 0);
+			if (i == iend) //below the pixel assignment to ensure both endpoints get colored.
+				break;
+			e2 = err;
+			if (e2 > -dx) { 
+				err -= dy; 
+				i += sx; 
 			}
-		} else {
-			for (int dx = 0; dx < adx; dx++) {
-				pData[MAP((line->x + line->dx * dx / adx), (line->y + line->dy * dx / adx))] = D3DCOLOR_XRGB(192, 255, 0);
+			if (e2 < dy) { 
+				err += dx; 
+				i += sy * LockedRect.Pitch / 4; 
 			}
 		}
 	}
 
 	if (tempLine != NULL) {
-		adx = std::abs(tempLine->dx);
-		ady = std::abs(tempLine->dy);
+		i = tempLine->x + tempLine->y * LockedRect.Pitch / 4; //starting point
+		iend = i + tempLine->dx + tempLine->dy * LockedRect.Pitch / 4; //ending point
+		dx = abs(tempLine->dx);     // pixels travelled in x
+		dy = abs(tempLine->dy);     // pixels traveled in y
+		sx = tempLine->dx > 0 ? 1 : -1; // +1 if going right, -1 if going left or vertical
+		sy = tempLine->dy > 0 ? 1 : -1; // +1 if going up, -1 if going down or horizontal
+		err = (dx>dy ? dx : -dy) / 2;// TODO: figure out what's going on.
 
-		if (ady >= adx) {
-			for (int dy = 0; dy < ady; dy++) {
-				pData[MAP((tempLine->x + tempLine->dx * dy / ady), (tempLine->y + tempLine->dy * dy / ady))] = D3DCOLOR_XRGB(0, 192, 128);
+		for (;;) {
+			pData[i] = D3DCOLOR_XRGB(160, 192, 0);
+			if (i == iend) //below the pixel assignment to ensure both endpoints get colored.
+				break;
+			e2 = err;
+			if (e2 > -dx) {
+				err -= dy;
+				i += sx;
 			}
-		} else {
-			for (int dx = 0; dx < adx; dx++) {
-				pData[MAP((tempLine->x + tempLine->dx * dx / adx), (tempLine->y + tempLine->dy * dx / adx))] = D3DCOLOR_XRGB(0, 192, 128);
+			if (e2 < dy) {
+				err += dx;
+				i += sy * LockedRect.Pitch / 4;
 			}
 		}
 	}
