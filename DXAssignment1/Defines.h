@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEFAULT_BITMAP "fields_medium.bmp"   //The image to load for the background
+#define DEFAULT_BITMAP "fields_small.bmp"   //The image to load for the background
 #define DEFAULT_WIDTH 640                    //default width
 #define DEFAULT_HEIGHT 480                   //default height
 #define CLEAR_COLOR D3DCOLOR_XRGB(0, 0, 25)  //background color (if no image)
