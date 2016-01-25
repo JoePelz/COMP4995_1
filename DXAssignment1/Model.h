@@ -11,38 +11,54 @@
 	and provides accessors and mutators as needed. 
 */
 class Model {
+	/* Collection of renderable items to be layered behind the 3d scene. */
 	std::vector<std::shared_ptr<Drawable2D>> bgLayers_;
+	/* Collection of renderable items to be layered ahead of the 3d scene. */
 	std::vector<std::shared_ptr<Drawable2D>> fgLayers_;
+	/* Lines drawn by the user. */
 	std::shared_ptr<Lines> lines_;
 
 	/* The current frame rate, in frames per second. */
 	UINT frameRate_;
 	/* The render time in ticks per frame. (1 / fps) */
 	INT64 frameTime_;
-	/* The number of timing ticks per second. */
-	INT64 ticksFrequency_;
 
 	/* The device context width. */
 	int width_;
 	/* The device context height. */
 	int height_;
 public:
+	/* The number of timing ticks per second. */
+	INT64 ticksFrequency_;
 	Model();
 	~Model();
 
+	/* Getter for frame rate. */
 	UINT getFrameRate() const;
+	/* Getter for frame time in ticks. There are ticksFrequency_ ticks per second. */
 	INT64 getFrameTime() const;
+	/* Mark that a frame has occured to update the frame rate counter.  Must be run every frame. */
 	void setFrameTick();
+	/* Initalize the frame counter, and the ticksFrequency_ variable. */
 	int initFrameTimer();
+	/* Getter for screen width. */
 	int getWidth() const;
+	/* Getter for screen height. */
 	int getHeight() const;
+	/* Getter for lines being drawn on the screen. */
 	std::shared_ptr<Lines> Model::getLines();
 
+	/* Add a drawable element to the background layer. */
 	void addBG(std::shared_ptr<Drawable2D> drawable);
+	/* Get the list of background elements. */
 	const std::vector<std::shared_ptr<Drawable2D>>& getBG() const;
+	/* Empty the list of background elements. */
 	void clearBG();
+	/* Add a drawable element to the foreground layer. */
 	void addFG(std::shared_ptr<Drawable2D> drawable);
+	/* Get the list of foreground elements. */
 	const std::vector<std::shared_ptr<Drawable2D>>& getFG() const;
+	/* Empty the list of foreground elements. */
 	void clearFG();
 };
 

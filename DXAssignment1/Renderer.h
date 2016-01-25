@@ -38,6 +38,7 @@ public:
 	*/
 	int render(Model& model);
 
+	/* Getter for the DX device. */
 	LPDIRECT3DDEVICE9& getDevice();
 };
 

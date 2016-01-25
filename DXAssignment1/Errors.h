@@ -5,7 +5,7 @@
 
 class Errors {
 public:
-	//Helper function to send error messages to the debugger with string formatting.
+	//Static helper function to send error messages to the debugger with string formatting.
 	static void SetError(TCHAR* szFormat, ...);
 	Errors();
 	~Errors();

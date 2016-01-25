@@ -1,6 +1,7 @@
 #include "Lines.h"
 
-
+D3DCOLOR Lines::colorTemp = D3DCOLOR_XRGB(160, 192, 0);
+D3DCOLOR Lines::colorFinal = D3DCOLOR_XRGB(192, 255, 0);
 
 Lines::Lines() {
 }
@@ -35,7 +36,7 @@ int Lines::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 		err = (dx>dy ? dx : -dy) / 2;// TODO: figure out what's going on.
 
 		for (;;) {
-			pData[i] = D3DCOLOR_XRGB(192, 255, 0);
+			pData[i] = colorFinal;
 			if (i == iend) //below the pixel assignment to ensure both endpoints get colored.
 				break;
 			e2 = err;
@@ -60,7 +61,7 @@ int Lines::draw(LPDIRECT3DSURFACE9 pBackSurf) {
 		err = (dx>dy ? dx : -dy) / 2;// TODO: figure out what's going on.
 
 		for (;;) {
-			pData[i] = D3DCOLOR_XRGB(160, 192, 0);
+			pData[i] = colorTemp;
 			if (i == iend) //below the pixel assignment to ensure both endpoints get colored.
 				break;
 			e2 = err;

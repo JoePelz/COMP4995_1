@@ -34,8 +34,11 @@ public:
 	//win32 window loop, to handle mouse, keyboard, and other windows messages.
 	static long CALLBACK windowLoop(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 
+	/* handle mouse actions: starts new line. */
 	void MouseDown(LPARAM pos);
+	/* handle mouse actions: drags line endpoint. */
 	void MouseMove(LPARAM pos);
+	/* handle mouse actions: finalizes a new line. */
 	void MouseUp(LPARAM pos);
 
 
